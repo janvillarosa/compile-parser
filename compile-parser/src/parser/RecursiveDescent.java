@@ -4,10 +4,10 @@ import intermediatecode.Background;
 import intermediatecode.Chapter;
 import intermediatecode.Characters;
 import intermediatecode.Command;
+import intermediatecode.ErrorCheck;
 import intermediatecode.Graphic;
 import intermediatecode.Image;
 import intermediatecode.ObjectTracker;
-import intermediatecode.StartTranslation;
 import intermediatecode.Statement;
 import java.util.ArrayList;
 
@@ -31,8 +31,8 @@ public class RecursiveDescent {
     private Statement stmt;
     private boolean cameFromChar = false;
     private int numChap = 0;
-    private int numChar =0;
-    private int numBackground =0;
+    private int numChar = 0;
+    private int numBackground = 0;
     private int numGraphic = 0;
 
     public RecursiveDescent(ArrayList<String> listOfTokens, ArrayList<String> listOfTokenTypes) {
@@ -58,7 +58,6 @@ public class RecursiveDescent {
 
     private boolean match(String t) {
         if (tok.equals(t)) {
-            //System.out.println("Token Match:" + t);
             if (i + 1 < listOfTokenTypes.size()) {
                 beforeTok = listOfTokens.get(i);
                 i++;
@@ -81,7 +80,7 @@ public class RecursiveDescent {
             System.out.println("Parse Complete: You have " + errorFlag + " errors.");
         } else {
             System.out.println("Parse Complete: Code is accepted.");
-            new StartTranslation(tracker);
+            new ErrorCheck(tracker);
         }
     }
 
@@ -95,7 +94,7 @@ public class RecursiveDescent {
                 b.setName(variable);
                 tracker.getListBackground().add(b);
                 b.setBackgroundID(numBackground);
-                
+
                 numBackground++;
 
                 start();
@@ -109,7 +108,7 @@ public class RecursiveDescent {
                 g.setName(variable);
                 tracker.getListGraphic().add(g);
                 g.setGraphicID(numGraphic);
-                
+
                 numGraphic++;
 
                 start();
@@ -125,7 +124,7 @@ public class RecursiveDescent {
                         chap.setChapterName(variable);
                         tracker.getListChapter().add(chap);
                         chap.setChapterID(numChap);
-                        
+
                         numChap++;
 
                         start();
@@ -147,7 +146,7 @@ public class RecursiveDescent {
                         c.setCharID(numChar);
                         cameFromChar = false;
                         tempListOfCharImg = new ArrayList();
-                        
+
                         numChar++;
 
                         if (match("}")) {
@@ -165,20 +164,20 @@ public class RecursiveDescent {
                     if (match(";")) {
                         block();
                         boolean chapMatch = true;
-                                int iterate = 0;
+                        int iterate = 0;
 
-                                while (chapMatch) {
-                                    
-                                    if (tracker.getListChapter().get(iterate).getChapterName().equals(chapVar)) {
+                        while (chapMatch) {
 
-                                        chapMatch = false;
-                                        tracker.getListChapter().get(iterate).setStatements(tempListOfStmt);
-                                        tempListOfStmt = new ArrayList();
+                            if (tracker.getListChapter().get(iterate).getChapterName().equals(chapVar)) {
 
-                                    } else {
-                                        iterate++;
-                                    }
-                                }
+                                chapMatch = false;
+                                tracker.getListChapter().get(iterate).setStatements(tempListOfStmt);
+                                tempListOfStmt = new ArrayList();
+
+                            } else {
+                                iterate++;
+                            }
+                        }
                         if (match("END_CHAPTER")) {
                             if (match(";")) {
 
